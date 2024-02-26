@@ -1,18 +1,58 @@
 package gopythonvenv
 
+import (
+	"fmt"
+	"os"
+	"os/exec"
+
+	"github.com/CREDOProject/go-pythonvenv/finder"
+	"github.com/CREDOProject/go-pythonvenv/utils"
+)
+
 // Structure representing a PythonVenv
 type GoPythonVenv struct {
 	Path string
 }
 
-func (g *GoPythonVenv) Create(path string) (*GoPythonVenv, error) {
-	return nil, nil
+// Creates a virtual environment in the specified path using the latest
+// Python version available in the system.
+func Create(path string) (*GoPythonVenv, error) {
+	err := createVenv(path)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &GoPythonVenv{
+		Path: path,
+	}, nil
 }
 
+func createVenv(path string) error {
+	if utils.IsDir(path) {
+		return fmt.Errorf("Virtual environment already exists.")
+	}
+	v, err := finder.New().Find()
+	if err != nil {
+		return err
+	}
+	cmd := exec.Command(v.Path, "-m", "venv", path)
+	if err = cmd.Start(); err != nil {
+		return err
+	}
+	return cmd.Wait()
+}
+
+// Activates the virtual environment in the specified path.
 func (g *GoPythonVenv) Activate() (*GoPythonVenv, error) {
+	// TODO: implement
 	return nil, nil
 }
 
-func (g *GoPythonVenv) Destroy() (*GoPythonVenv, error) {
-	return nil, nil
+// Removes the virtual environment in the specified path.
+func (g *GoPythonVenv) Destroy() error {
+	if err := os.RemoveAll(g.Path); err != nil {
+		return err
+	}
+	return nil
 }
