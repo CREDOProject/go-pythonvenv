@@ -44,9 +44,14 @@ func createVenv(path string) error {
 }
 
 // Activates the virtual environment in the specified path.
-func (g *GoPythonVenv) Activate() (*GoPythonVenv, error) {
-	// TODO: implement
-	return nil, nil
+func (g *GoPythonVenv) Activate() []string {
+	environment := utils.Env()
+
+	environment["VIRTUAL_ENV"] = g.Path
+	environment["PATH"] = g.Path + "/bin:" + environment["PATH"]
+	delete(environment, "PYTHONHOME")
+
+	return utils.Roll(environment)
 }
 
 // Removes the virtual environment in the specified path.
