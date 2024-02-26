@@ -1,12 +1,17 @@
 package gopythonvenv
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
 
 	"github.com/CREDOProject/go-pythonvenv/finder"
 	"github.com/CREDOProject/go-pythonvenv/utils"
+)
+
+var (
+	ErrAlreadyPresent = errors.New("Virtual environment already exists.")
 )
 
 // Structure representing a PythonVenv
@@ -19,7 +24,7 @@ type PythonVenv struct {
 func Create(path string) (*PythonVenv, error) {
 	err := createVenv(path)
 
-	if err != nil {
+	if err != nil && err != ErrAlreadyPresent {
 		return nil, err
 	}
 
@@ -30,7 +35,7 @@ func Create(path string) (*PythonVenv, error) {
 
 func createVenv(path string) error {
 	if utils.IsDir(path) {
-		return fmt.Errorf("Virtual environment already exists.")
+		return ErrAlreadyPresent
 	}
 	v, err := finder.New().Find()
 	if err != nil {
