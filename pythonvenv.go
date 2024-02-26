@@ -2,7 +2,6 @@ package gopythonvenv
 
 import (
 	"errors"
-	"fmt"
 	"os"
 	"os/exec"
 
