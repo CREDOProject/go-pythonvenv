@@ -10,20 +10,20 @@ import (
 )
 
 // Structure representing a PythonVenv
-type GoPythonVenv struct {
+type PythonVenv struct {
 	Path string
 }
 
 // Creates a virtual environment in the specified path using the latest
 // Python version available in the system.
-func Create(path string) (*GoPythonVenv, error) {
+func Create(path string) (*PythonVenv, error) {
 	err := createVenv(path)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return &GoPythonVenv{
+	return &PythonVenv{
 		Path: path,
 	}, nil
 }
@@ -43,8 +43,8 @@ func createVenv(path string) error {
 	return cmd.Wait()
 }
 
-// Activates the virtual environment in the specified path.
-func (g *GoPythonVenv) Activate() []string {
+// Activates the virtual environment in the path.
+func (g *PythonVenv) Activate() []string {
 	environment := utils.Env()
 
 	environment["VIRTUAL_ENV"] = g.Path
@@ -55,7 +55,7 @@ func (g *GoPythonVenv) Activate() []string {
 }
 
 // Removes the virtual environment in the specified path.
-func (g *GoPythonVenv) Destroy() error {
+func (g *PythonVenv) Destroy() error {
 	if err := os.RemoveAll(g.Path); err != nil {
 		return err
 	}
