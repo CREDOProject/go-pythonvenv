@@ -15,7 +15,7 @@ func TestPathProvider(t *testing.T) {
 	}
 	t.Setenv("PATH", strings.Join(want, string(os.PathListSeparator)))
 
-	p := newPathProvider()
+	p := NewPathProvider()
 	if !reflect.DeepEqual(p.paths, want) {
 		t.Errorf("got %q, want %q", p.paths, want)
 	}
