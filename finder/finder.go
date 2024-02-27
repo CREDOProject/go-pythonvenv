@@ -2,6 +2,7 @@ package finder
 
 import (
 	"github.com/CREDOProject/go-pythonvenv/providers"
+	version "github.com/aquasecurity/go-pep440-version"
 )
 
 // finder is a Python version finder.
@@ -24,7 +25,7 @@ func (f *finder) setupProviders() {
 func (f *finder) Find() (*providers.PythonExecutable, error) {
 	var maxVersion *providers.PythonExecutable
 
-	specifier, err := providers.Specifier()
+	specifier, err := providers.Specifier(&version.Version{})
 	if err != nil {
 		return nil, err
 	}
@@ -40,18 +41,20 @@ func (f *finder) Find() (*providers.PythonExecutable, error) {
 			return nil, err
 		}
 		for _, executable := range executables {
-			if _, ok := seen[executable]; !ok {
-				seen[executable] = struct{}{}
+			if _, ok := seen[executable]; ok {
+				continue
 			}
+			seen[executable] = struct{}{}
+
 			pythonExecutable, err := providers.NewPythonExecutable(executable)
 			if err != nil {
 				return nil, err
 			}
-
 			if specifier.Check(*pythonExecutable.Version) {
 				if maxVersion == nil {
 					maxVersion = pythonExecutable
-				} else if pythonExecutable.Version.GreaterThan(*maxVersion.Version) {
+				}
+				if pythonExecutable.Version.GreaterThan(*maxVersion.Version) {
 					maxVersion = pythonExecutable
 				}
 			}

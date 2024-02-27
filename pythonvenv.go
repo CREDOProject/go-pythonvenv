@@ -23,11 +23,9 @@ type PythonVenv struct {
 // Python version available in the system.
 func Create(path string) (*PythonVenv, error) {
 	err := createVenv(path)
-
-	if err != nil && err != ErrAlreadyPresent {
+	if err != nil || err != ErrAlreadyPresent {
 		return nil, err
 	}
-
 	return &PythonVenv{
 		Path: path,
 	}, nil

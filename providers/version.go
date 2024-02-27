@@ -57,10 +57,25 @@ func getPythonVersion(executable string) (*pep440Version.Version, error) {
 }
 
 // Returns a pep440Version.Specifier.
-func Specifier() (*pep440Version.Specifiers, error) {
-	s, err := pep440Version.NewSpecifiers("== 0")
+func Specifier(versionInfo *pep440Version.Version) (*pep440Version.Specifiers, error) {
+	s, err := pep440Version.NewSpecifiers("== " + getGlobVersion(versionInfo))
+
 	if err != nil {
 		return nil, err
 	}
 	return &s, nil
+}
+
+// getGlobVersion returns the glob version for the given version if it's not
+// a complete version, otherwise it returns the given version.
+//
+// This function assumes that the given version is a final release.
+func getGlobVersion(version *pep440Version.Version) string {
+	v := version.String()
+	switch len(strings.Split(v, ".")) {
+	case 1, 2:
+		return fmt.Sprintf("%s.*", v)
+	default:
+		return v
+	}
 }
