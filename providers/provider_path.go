@@ -3,6 +3,8 @@ package providers
 import (
 	"os"
 	"strings"
+
+	"github.com/CREDOProject/sharedutils/files"
 )
 
 // pathProvider is a Provider that finds Python executables in the PATH
@@ -21,7 +23,7 @@ func NewPathProvider() *pathProvider {
 func (p *pathProvider) Executables() ([]string, error) {
 	var executables []string
 	for _, path := range p.paths {
-		execs, err := execsInPath(path)
+		execs, err := files.ExecsInPath(path, looksLikePython)
 		if err != nil {
 			return nil, err
 		}

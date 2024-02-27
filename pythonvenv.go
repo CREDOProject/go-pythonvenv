@@ -7,6 +7,7 @@ import (
 
 	"github.com/CREDOProject/go-pythonvenv/finder"
 	"github.com/CREDOProject/go-pythonvenv/utils"
+	"github.com/CREDOProject/sharedutils/files"
 )
 
 var (
@@ -33,7 +34,7 @@ func Create(path string) (*PythonVenv, error) {
 }
 
 func createVenv(path string) error {
-	if utils.IsDir(path) {
+	if files.IsDir(path) {
 		return ErrAlreadyPresent
 	}
 	v, err := finder.New().Find()
