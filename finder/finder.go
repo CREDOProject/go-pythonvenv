@@ -25,7 +25,11 @@ func (f *finder) setupProviders() {
 func (f *finder) Find() (*providers.PythonExecutable, error) {
 	var maxVersion *providers.PythonExecutable
 
-	specifier, err := providers.Specifier(&version.Version{})
+	baseversion, err := version.Parse("3.0.0") // Uses python 3
+	if err != nil {
+		return nil, err
+	}
+	specifier, err := providers.Specifier(&baseversion)
 	if err != nil {
 		return nil, err
 	}
@@ -50,16 +54,15 @@ func (f *finder) Find() (*providers.PythonExecutable, error) {
 			if err != nil {
 				return nil, err
 			}
+			if maxVersion == nil {
+				maxVersion = pythonExecutable
+			}
 			if specifier.Check(*pythonExecutable.Version) {
-				if maxVersion == nil {
-					maxVersion = pythonExecutable
-				}
 				if pythonExecutable.Version.GreaterThan(*maxVersion.Version) {
 					maxVersion = pythonExecutable
 				}
 			}
 		}
 	}
-
 	return maxVersion, nil
 }
