@@ -40,10 +40,8 @@ func createVenv(path string) error {
 		return err
 	}
 	cmd := exec.Command(v.Path, "-m", "venv", path)
-	if err = cmd.Start(); err != nil {
-		return err
-	}
-	return cmd.Wait()
+	err = cmd.Run()
+	return err
 }
 
 // Activates the virtual environment in the path.
