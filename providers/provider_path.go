@@ -23,6 +23,9 @@ func NewPathProvider() *pathProvider {
 func (p *pathProvider) Executables() ([]string, error) {
 	var executables []string
 	for _, path := range p.paths {
+		if !files.IsDir(path) {
+			continue
+		}
 		execs, err := files.ExecsInPath(path, looksLikePython)
 		if err != nil {
 			return nil, err
