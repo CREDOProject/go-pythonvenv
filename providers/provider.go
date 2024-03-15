@@ -1,7 +1,5 @@
 package providers
 
-import ()
-
 // A provider is a type of object that provides Python Executables.
 type Provider interface {
 	Executables() ([]string, error)

@@ -7,7 +7,6 @@ import (
 
 	"github.com/CREDOProject/go-pythonvenv/finder"
 	"github.com/CREDOProject/go-pythonvenv/utils"
-	"github.com/CREDOProject/sharedutils/files"
 )
 
 var (
@@ -23,7 +22,7 @@ type PythonVenv struct {
 // Python version available in the system.
 func Create(path string) (*PythonVenv, error) {
 	err := createVenv(path)
-	if err != ErrAlreadyPresent && err != nil {
+	if err != nil && err != ErrAlreadyPresent {
 		return nil, err
 	}
 	return &PythonVenv{
@@ -32,9 +31,9 @@ func Create(path string) (*PythonVenv, error) {
 }
 
 func createVenv(path string) error {
-	if files.IsDir(path) {
-		return ErrAlreadyPresent
-	}
+	// if files.IsDir(path) {
+	// 	return ErrAlreadyPresent
+	// }
 	v, err := finder.New().Find()
 	if err != nil {
 		return err
